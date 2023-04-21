@@ -12,6 +12,7 @@ if __name__ == '__main__':
     parser.add_argument('-pic', '--picture', default="./moondream.jpg", help='picture file')
     parser.add_argument('-p', '--prompt', default="Describe this image.", help='prompt')
     parser.add_argument('-max', '--max_new_tokens', default=256, help='max_new_tokens')
+    parser.add_argument('-int4', '--int4_quant', default=False, help='int4 quantization')
 
     args = parser.parse_args()
     model_id = args.model_id
@@ -20,9 +21,10 @@ if __name__ == '__main__':
     max_new_tokens = args.max_new_tokens
     picture_path = args.picture
     question = args.prompt
+    int4_quant = args.int4_quant
 
     if not Path(ov_model_path).exists():
-        moondream2_ov = MoonDream2_OV(pretrained_model_path=model_id, ov_model_path=ov_model_path, device=device)
+        moondream2_ov = MoonDream2_OV(pretrained_model_path=model_id, ov_model_path=ov_model_path, device=device, int4_quant=int4_quant)
         moondream2_ov.export_vision_to_ov(picture_path)
         del moondream2_ov.model
         del moondream2_ov.tokenizer
@@ -30,7 +32,7 @@ if __name__ == '__main__':
 
     core = ov.Core()
 
-    moondream2_model = OVMoonDreamForCausalLM(core=core, ov_model_path=ov_model_path, device=device)
+    moondream2_model = OVMoonDreamForCausalLM(core=core, ov_model_path=ov_model_path, device=device, int4_quant=int4_quant)
 
     enc_image = moondream2_model.vision_model(picture_path)
 
