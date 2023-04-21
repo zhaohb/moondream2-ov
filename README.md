@@ -9,6 +9,7 @@
 ```bash
 git clone https://github.com/zhaohb/moondream2-ov.git
 pip install openvino_dev 
+pip install nncf
 cd moondream2-ov
 pip install transformers==4.43.2
 ```
@@ -36,5 +37,7 @@ options:
                         prompt
   -max MAX_NEW_TOKENS, --max_new_tokens MAX_NEW_TOKENS
                         max_new_tokens 
+  -int4 INT4_QUANT, --int4_quant INT4_QUANT
+                        int4 quantization
 ```
 
