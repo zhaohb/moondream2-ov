@@ -37,7 +37,7 @@ options:
                         prompt
   -max MAX_NEW_TOKENS, --max_new_tokens MAX_NEW_TOKENS
                         max_new_tokens 
-  -int4 INT4_QUANT, --int4_quant INT4_QUANT
-                        int4 quantization
+  -int4 INT4_QUANT, --int4_compress INT4_QUANT
+                        int4 weights compress
 ```
 

@@ -208,7 +208,7 @@ class LlmStatefulModel():
         ov_model_path=None,
         device='CPU',
         fp16=False,
-        int4_quant=False,
+        int4_compress=False,
     ):
         self.name = "MoonDream2 LLM Model"
         self.model = model
@@ -216,7 +216,7 @@ class LlmStatefulModel():
         self.device=device
         self.ov_model_path = ov_model_path
         self.fp16=fp16
-        self.int4_quant = int4_quant
+        self.int4_compress = int4_compress
         self.inputs_dict = {}
 
     def get_model(self):
@@ -280,7 +280,7 @@ class LlmStatefulModel():
         self.save_tokenizer(self.tokenizer, self.ov_model_path)
         self.model.config.save_pretrained(self.ov_model_path)
 
-        if self.int4_quant:
+        if self.int4_compress:
             compression_configuration = {
                 "mode": nncf.CompressWeightsMode.INT4_SYM,
                 "group_size": 128,
@@ -586,7 +586,7 @@ class Middleprocess:
         return final_features
 
 class MoonDream2_OV:
-    def __init__(self, pretrained_model_path=None, model=None, tokenizer=None, ov_model_path='/tmp/moonstream2_ov/', device='CPU', int4_quant=False):
+    def __init__(self, pretrained_model_path=None, model=None, tokenizer=None, ov_model_path='/tmp/moonstream2_ov/', device='CPU', int4_compress=False):
 
         if model is None and pretrained_model_path:        
             self.model = AutoModelForCausalLM.from_pretrained(
@@ -601,12 +601,12 @@ class MoonDream2_OV:
             self.model = model
             self.tokenizer = tokenizer
 
-        self.int4_quant = int4_quant
+        self.int4_compress = int4_compress
         self.vision_encoder_model = VisionEncoderModel(model=self.model, ov_model_path=ov_model_path, device=device)
         self.vision_projection_model = VisionProjectionModel(model=self.model, ov_model_path=ov_model_path, device=device)
 
         self.llm_embd_model = LlmEmbdModel(model=self.model, ov_model_path=ov_model_path, device=device)
-        self.llm_stateful_model = LlmStatefulModel(model=self.model, tokenizer= self.tokenizer, ov_model_path=ov_model_path, device=device, int4_quant=self.int4_quant)
+        self.llm_stateful_model = LlmStatefulModel(model=self.model, tokenizer= self.tokenizer, ov_model_path=ov_model_path, device=device, int4_compress=self.int4_compress)
 
         self.vision_pre_process = Preprocess()
         self.vision_middle_process = Middleprocess()
@@ -630,18 +630,16 @@ class OVMoonDreamForCausalLM(GenerationMixin):
         core=None,
         ov_model_path=None,
         device='CPU',
-        int4_quant=False
+        int4_compress=False
     ):
         self.ov_model_path = ov_model_path
         self.core = core
         self.device = device
-        self.int4_quant = int4_quant
+        self.int4_compress = int4_compress
 
-        if int4_quant:
-            print('int4_quant')
+        if int4_compress:
             self.llm_model = core.read_model(Path(f"{ov_model_path}/llm_stateful_int4.xml"))
         else:
-            print('no int4_quant')
             self.llm_model = core.read_model(Path(f"{ov_model_path}/llm_stateful.xml"))
         self.llm_compiled_model = core.compile_model(self.llm_model, device)
         self.llm_request = self.llm_compiled_model.create_infer_request()
