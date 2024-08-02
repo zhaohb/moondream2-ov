@@ -670,11 +670,11 @@ class OVMoonDreamForCausalLM(GenerationMixin):
 
     def vision_model_init(self):
         self.vision_encoder_model = self.core.read_model(Path(f"{self.ov_model_path}/vision_encoder.xml"))
-        self.vision_encoder_compiled_model = self.core.compile_model(self.vision_encoder_model)
+        self.vision_encoder_compiled_model = self.core.compile_model(self.vision_encoder_model, self.device)
         self.vision_encoder_request = self.vision_encoder_compiled_model.create_infer_request()
 
         self.vision_projectiton_model = self.core.read_model(Path(f"{self.ov_model_path}/vision_projectiton.xml"))
-        self.vision_projectiton_compiled_model = self.core.compile_model(self.vision_projectiton_model)
+        self.vision_projectiton_compiled_model = self.core.compile_model(self.vision_projectiton_model, self.device)
         self.vision_projectiton_request = self.vision_projectiton_compiled_model.create_infer_request()
 
         self.vision_pre_process = Preprocess()
