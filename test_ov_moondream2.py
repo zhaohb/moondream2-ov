@@ -5,7 +5,7 @@ from ov_moondream2 import OVMoonDreamForCausalLM, MoonDream2_OV
         
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser("Export minicpm-v2 Model to IR", add_help=True)
+    parser = argparse.ArgumentParser("Export moondream2 Model to IR", add_help=True)
     parser.add_argument("-m", "--model_id", required=True, help="model_id or directory for loading")
     parser.add_argument("-o", "--output_dir", required=True, help="output directory for saving model")
     parser.add_argument('-d', '--device', default='CPU', help='inference device')

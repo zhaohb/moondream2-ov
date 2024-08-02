@@ -620,7 +620,6 @@ class MoonDream2_OV:
         final_features = self.vision_middle_process.middleprocess(combined_features, im_list, patches)
 
         self.vision_projection_model.convert_sdpa_ov(final_features=final_features)
-
         self.llm_stateful_model.convert_sdpa_ov()
         self.llm_embd_model.convert_sdpa_ov()
 
