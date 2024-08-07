@@ -26,6 +26,7 @@ from typing import Optional, Tuple, List, Union
 
 import openvino as ov
 import nncf
+import time
 
 def model_has_state(ov_model: ov.Model):
     # TODO: Provide a better way based on the variables availability, but OV Python API doesn't expose required methods
@@ -629,7 +630,8 @@ class OVMoonDreamForCausalLM(GenerationMixin):
         core=None,
         ov_model_path=None,
         device='CPU',
-        int4_compress=False
+        int4_compress=False,
+        llm_infer_list=[],
     ):
         self.ov_model_path = ov_model_path
         self.core = core
@@ -668,6 +670,8 @@ class OVMoonDreamForCausalLM(GenerationMixin):
         self.tokenizer = AutoTokenizer.from_pretrained(ov_model_path, trust_remote_code=True)
 
         self.vision_model_init()
+
+        self.llm_infer_list = llm_infer_list
  
 
     def vision_model_init(self):
@@ -769,8 +773,13 @@ class OVMoonDreamForCausalLM(GenerationMixin):
         # print('attention_mask: ', inputs_dict['attention_mask'].shape)
         # print('position_ids: ', inputs_dict['position_ids'])
         # print('inputs_embeds: ', inputs_dict['inputs_embeds'])
+        start = time.perf_counter()
         self.llm_request.start_async(inputs_dict, share_inputs=True)
         self.llm_request.wait()
+        end = time.perf_counter()
+
+        generation_time = (end - start) * 1000
+        self.llm_infer_list.append(generation_time)
 
         past_key_values = ((),)
         self.past_len += inputs_dict["inputs_embeds"].shape[1]
@@ -835,6 +844,8 @@ class OVMoonDreamForCausalLM(GenerationMixin):
             # older attention values, as their corresponding values are not part of the input.
             if cache_length < past_length and attention_mask is not None:
                 attention_mask = attention_mask[:, -(cache_length + input_ids.shape[1]) :]
+        else:
+            self.llm_infer_list.clear()
 
         position_ids = kwargs.get("position_ids", None)
         if attention_mask is not None and position_ids is None:
