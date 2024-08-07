@@ -642,7 +642,7 @@ class OVMoonDreamForCausalLM(GenerationMixin):
         else:
             self.llm_model = core.read_model(Path(f"{ov_model_path}/llm_stateful.xml"))
             self.llm_compiled_model = core.compile_model(self.llm_model, device, config = {'INFERENCE_PRECISION_HINT': 'f32'})
-        self.llm_compiled_model = core.compile_model(self.llm_model, device)
+            
         self.llm_request = self.llm_compiled_model.create_infer_request()
 
         self.input_names = {key.get_any_name(): idx for idx, key in enumerate(self.llm_model.inputs)}
