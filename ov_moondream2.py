@@ -660,7 +660,7 @@ class OVMoonDreamForCausalLM(GenerationMixin):
         self._supports_cache_class = False
 
         self.llm_embd = core.read_model(Path(f"{ov_model_path}/llm_embd.xml"))
-        self.llm_embd_compiled_model = core.compile_model(self.llm_embd, device)
+        self.llm_embd_compiled_model = core.compile_model(self.llm_embd, 'CPU')
         self.llm_embd_request = self.llm_embd_compiled_model.create_infer_request()
         
         self.tokenizer = AutoTokenizer.from_pretrained(ov_model_path, trust_remote_code=True)
