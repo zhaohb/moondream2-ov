@@ -12,7 +12,7 @@ if __name__ == '__main__':
     parser.add_argument('-pic', '--picture', default="./moondream.jpg", help='picture file')
     parser.add_argument('-p', '--prompt', default="Describe this image.", help='prompt')
     parser.add_argument('-max', '--max_new_tokens', default=256, help='max_new_tokens')
-    parser.add_argument('-int4', '--int4_compress', default=False, help='int4 weights compress')
+    parser.add_argument('-int4', '--int4_compress', action="store_true", help='int4 weights compress')
 
     args = parser.parse_args()
     model_id = args.model_id
@@ -29,6 +29,13 @@ if __name__ == '__main__':
         del moondream2_ov.model
         del moondream2_ov.tokenizer
         del moondream2_ov
+    elif Path(ov_model_path).exists() and int4_compress is True and not Path(f"{ov_model_path}/llm_stateful_int4.xml").exists():
+        moondream2_ov = MoonDream2_OV(pretrained_model_path=model_id, ov_model_path=ov_model_path, device=device, int4_compress=int4_compress)
+        moondream2_ov.export_vision_to_ov(picture_path)
+        del moondream2_ov.model
+        del moondream2_ov.tokenizer
+        del moondream2_ov
+
 
     core = ov.Core()
 
