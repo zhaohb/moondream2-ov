@@ -2,6 +2,7 @@ import argparse
 import openvino as ov
 from pathlib import Path
 from ov_moondream2 import OVMoonDreamForCausalLM, MoonDream2_OV
+from transformers import TextStreamer
         
 if __name__ == '__main__':
 
@@ -46,6 +47,8 @@ if __name__ == '__main__':
     chat_history=""
     prompt = f"<image>\n\n{chat_history}Question: {question}\n\nAnswer:"
 
+    streamer = TextStreamer(moondream2_model.tokenizer, skip_special_tokens=True, skip_prompt=True)
+
     inputs_embeds=moondream2_model.input_embeds(prompt, enc_image)
 
     generate_config = {
@@ -55,7 +58,7 @@ if __name__ == '__main__':
             "max_new_tokens": max_new_tokens,
         }
     output_ids = moondream2_model.generate( 
-                inputs_embeds=inputs_embeds, **generate_config
+                inputs_embeds=inputs_embeds, **generate_config, streamer=streamer
             )
     
-    print(moondream2_model.tokenizer.batch_decode(output_ids, skip_special_tokens=True))
+    #print(moondream2_model.tokenizer.batch_decode(output_ids, skip_special_tokens=True))
