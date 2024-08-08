@@ -24,6 +24,7 @@ python3 test_ov_moondream2.py -m /path/to/moondream2 -o /path/to/moondream2_ov
 
 #for gpu
 python3 test_ov_moondream2.py -m /path/to/moondream2 -o /path/to/moondream2_ov -d GPU.1
+
 #output
 OpenVINO version
  2024.4.0-16249-d604f1d8b2a
