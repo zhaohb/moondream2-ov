@@ -1,6 +1,8 @@
 ## Update Notes
 ### 2024/08/01
 1. vikhyatk/moondream2 model supports using openvino to accelerate the inference process. Currently only verified on Linux system and only tested on CPU platform.
+### 2024/08/08
+1. Now supports Intel's ARC770 GPU
 
 ## Running Guide
 ### Installation
@@ -17,7 +19,11 @@ pip install torchvision
 ### Convert moondream2 model to OpenVINO™ IR(Intermediate Representation) and testing:
 ```shell
 cd moondream2-ov
+#for cpu
 python3 test_ov_moondream2.py -m /path/to/moondream2 -o /path/to/moondream2_ov
+
+#for gpu
+python3 test_ov_moondream2.py -m /path/to/moondream2 -o /path/to/moondream2_ov -d GPU.1
 ```
 ### Note:
 After the command is executed, the IR of OpenVINO will be saved in the directory /path/to/moondream2_ov. If the existence of /path/to/moondream2_ov is detected, the model conversion process will be skipped and the IR of OpenVINO will be loaded directly.
