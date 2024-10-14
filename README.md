@@ -10,11 +10,8 @@
 
 ```bash
 git clone https://github.com/zhaohb/moondream2-ov.git
-pip install openvino_dev 
-pip install nncf
-pip install transformers==4.43.2
-pip install torch
-pip install torchvision
+pip install -r requirements.txt
+pip install --pre -U openvino openvino-tokenizers --extra-index-url https://storage.openvinotoolkit.org/simple/wheels/nightly
 ```
 ### Convert moondream2 model to OpenVINO™ IR(Intermediate Representation) and testing:
 ```shell
@@ -26,16 +23,11 @@ python3 test_ov_moondream2.py -m /path/to/moondream2 -o /path/to/moondream2_ov
 python3 test_ov_moondream2.py -m /path/to/moondream2 -o /path/to/moondream2_ov -d GPU.1
 
 #output
-OpenVINO version
- 2024.4.0-16249-d604f1d8b2a
-The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
- The image shows a simple, minimalist desk setup with a laptop on a white surface, a lamp, and a patterned rug on the floor.
- The image shows a white desk with a laptop on top, positioned against a gray wall with a patterned rug on the floor.
-
-Inputs len 743, First token latency: 296.71 ms, Output len 26, Avage token latency: 31.20 ms
-visin latency: 173.64 ms, embeds latency : 0.86 ms
-e2e latency:  1282.3543029953726
-
+INFO:nncf:NNCF initialized successfully. Supported frameworks detected: torch, onnx, openvino
+OpenVINO version 
+ 2024.5.0-16678-090da7b5376
+The attention mask is not set and cannot be inferred from input because pad token is same as eos token.As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+ The image shows a modern, minimalist desk with a laptop on top, a lamp on the left side, and a rug on the right side.
 ```
 ### Note:
 After the command is executed, the IR of OpenVINO will be saved in the directory /path/to/moondream2_ov. If the existence of /path/to/moondream2_ov is detected, the model conversion process will be skipped and the IR of OpenVINO will be loaded directly.

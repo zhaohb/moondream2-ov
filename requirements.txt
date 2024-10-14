@@ -1,0 +1,5 @@
+torch==2.4.1+cpu
+torchvision==0.19.1+cpu
+einops
+transformers==4.43.2
+nncf==2.12.0

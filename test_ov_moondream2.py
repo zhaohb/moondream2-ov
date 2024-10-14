@@ -49,7 +49,7 @@ if __name__ == '__main__':
     version = ov.get_version()
     print("OpenVINO version \n", version)
 
-    for i in range(2):
+    for i in range(1):
         vision_start = time.perf_counter()
         enc_image = moondream2_model.vision_model(picture_path)
         vision_end = time.perf_counter()
